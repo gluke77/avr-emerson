@@ -32,11 +32,13 @@ void reset_settings(void);
 int m0 = 0;
 int m1 = 0;
 
+int idx = 0;
+
 int main(void)
 {
 	timer_init();
 	kbd_init();
-//	shift_init();
+	shift_init();
 	sensor_init();
 	menu_init();
 	menu_items_init();
@@ -63,8 +65,24 @@ int main(void)
 	for (;;)
 	{
 		do_lcd();
-        sprintf(lcd_line0, "LINE 0:%d:%d", m0, timer_seconds_total);
-        sprintf(lcd_line1, "LINE 1:%d:%d", m1, timer_seconds_total);
+        do_sensor();
+        do_shift();
+        sprintf(lcd_line0, "L0:%d:%d     ", m0, timer_seconds_total);
+        sprintf(lcd_line1, "L1:%d:%d     ", m1, timer_seconds_total);
+        
+        
+        for (idx = 0; idx < 4; idx++)
+            if (!TEST_SENSOR(idx)) {
+                beep_ms(50);
+                _delay_ms(100);
+                SETBIT(controls, idx);
+                CLEARBIT(controls, idx + 4);
+                sprintf(lcd_line0, "L0:%d:%d:%d     ", m0, timer_seconds_total, idx);
+            } else {
+                SETBIT(controls, idx + 4);
+                CLEARBIT(controls, idx);
+
+            }
 
 //		menu_doitem();
 		process_usart();
@@ -105,4 +123,5 @@ void process_usart(void)
         usart1_read();
     }
 }
+
 

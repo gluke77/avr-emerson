@@ -7,7 +7,7 @@ uint8_t				inverse_mask;
 
 void sensor_init(void)
 {
-	inverse_mask = 0x00; // igk: was 0x07 -- 2008-11-23
+	inverse_mask = 0x0F; // igk: was 0x07 -- 2008-11-23
 //	inverse_mask |= _BV(SENSOR_END_OF_FOIL);
 	sensors = 0x00;
 	SENSOR_PORT_DDR = 0;
@@ -27,6 +27,8 @@ void sensor_scan(void)
 	uint8_t	sensor_id;
 
 	sensor_value = SENSOR_PORT >> 4;
+    sensors = sensor_value;
+    return;
 
 	for (sensor_id = 0; sensor_id < 8; sensor_id++)
 	{
