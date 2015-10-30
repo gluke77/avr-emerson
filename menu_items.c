@@ -11,7 +11,10 @@
 #include "menu_items.h"
 #include "kbd.h"
 #include "sensor.h"
+#include "shift_out.h"
 
+extern int kbdv[4];
+/*
 extern uint8_t	g_usart0_modbus_id;
 extern long		g_usart0_baudrate;
 extern long		g_usart1_baudrate;
@@ -22,13 +25,16 @@ extern int		g_last_nak;
 void loadFromEE(void);
 void storeToEE(void);
 void reset_settings(void);
+*/
+
+int g_selected = 0;
 
 void menu_items_init(void)
 {
-	uint8_t		idx;
+//	uint8_t		idx;
 	
 	menu_items[MENU_MODE_START][0] = menu_start;
-	
+/*	
 	idx = 0; 
 
 	menu_items[MENU_MODE_CONTROLS][idx++] = menu_start;
@@ -42,6 +48,7 @@ void menu_items_init(void)
 	menu_items[MENU_MODE_USART][idx++] = menu_reset_settings;
 
 	menu_items[MENU_MODE_VERSION][0] = menu_version;
+*/
 }
 
 void menu_common(void)
@@ -68,15 +75,56 @@ void menu_common(void)
 	}
 }
 
+
+
 void menu_start(void)
 {
-	sprintf(lcd_line0, "нюн моо яхярелю ");
-	sprintf(lcd_line1, "     клор-1     ");
-	
-	menu_common();
+    int s = sensors & 0x0F;
+
+
+	sprintf(lcd_line0, "SENSORS %d                 ", s);
+    sprintf(lcd_line1, "%d %d %d %d  ", kbdv[0], kbdv[1], kbdv[2], kbdv[3]);
+/*
+	if (KEY_PRESSED(KEY_RIGHT))
+	{
+		g_selected++;
+        if (g_selected > 7)
+            g_selected = 0;
+			
+		CLEAR_KEY_PRESSED(KEY_RIGHT);
+		beep_ms(50);
+	}
+
+	if (KEY_PRESSED(KEY_LEFT))
+	{
+		g_selected--;
+        if (g_selected < 0)
+            g_selected = 7;
+		
+		CLEAR_KEY_PRESSED(KEY_LEFT);
+		beep_ms(50);
+	}
+
+
+    if (KEY_PRESSED(KEY_ENTER))
+    {
+        if (TEST_CONTROL(g_selected))
+        {
+            CONTROL_OFF(g_selected);
+        }
+        else
+        {
+            CONTROL_ON(g_selected);
+        }
+
+		CLEAR_KEY_PRESSED(KEY_LEFT);
+		beep_ms(50);
+    }
+*/
+//	menu_common();
 }
 
-
+/*
 void menu_usart0_modbus_id(void)
 {
 	sprintf(lcd_line0, "юдпея сярпниярбю");
@@ -258,3 +306,4 @@ void menu_version(void)
 	sprintf(lcd_line1, "%-16s", FW_VERSION);
 	menu_common();
 }
+*/

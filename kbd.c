@@ -133,18 +133,23 @@ void one_key_scan(uint8_t key_id)
 	}
 }
 
+int kbdv[KBD_BANK_COUNT];
+
 void kbd_scan(void)
 {
 	uint8_t		bank_id;
 	uint8_t		key_id;
+    uint8_t     tmp;
 
 	for (bank_id = 0; bank_id < KBD_BANK_COUNT; bank_id++)
 	{
 		kbd_select(bank_id);
 		_delay_us(5);
-		one_bank_scan(bank_id);
+        tmp = KBD_PORT;
+        kbdv[bank_id] = tmp & 0xFF;
+		//one_bank_scan(bank_id);
 	}
 
-	for (key_id = 0; key_id < KEY_COUNT; key_id++)
-		one_key_scan(key_id);
+	//for (key_id = 0; key_id < KEY_COUNT; key_id++)
+	//	one_key_scan(key_id);
 }

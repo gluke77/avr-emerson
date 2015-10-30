@@ -45,10 +45,10 @@ int main(void)
 
 	beep_init();
 
-    reset_settings();
+    //reset_settings();
 
-	usart0_init(USART_RS485_SLAVE, g_usart0_baudrate);
-	usart1_init(USART_RS485_SLAVE, g_usart1_baudrate);
+//	usart0_init(USART_RS485_SLAVE, g_usart0_baudrate);
+//	usart1_init(USART_RS485_SLAVE, g_usart1_baudrate);
 	
 	GLOBAL_INT_ENABLE;
 
@@ -62,30 +62,17 @@ int main(void)
 
 	lcd_init();
 	
+    controls = 0x00;
 	for (;;)
 	{
 		do_lcd();
-        do_sensor();
         do_shift();
-        sprintf(lcd_line0, "L0:%d:%d     ", m0, timer_seconds_total);
-        sprintf(lcd_line1, "L1:%d:%d     ", m1, timer_seconds_total);
-        
-        
-        for (idx = 0; idx < 4; idx++)
-            if (!TEST_SENSOR(idx)) {
-                beep_ms(50);
-                _delay_ms(100);
-                SETBIT(controls, idx);
-                CLEARBIT(controls, idx + 4);
-                sprintf(lcd_line0, "L0:%d:%d:%d     ", m0, timer_seconds_total, idx);
-            } else {
-                SETBIT(controls, idx + 4);
-                CLEARBIT(controls, idx);
+        do_sensor();
+        kbd_scan();
+		menu_doitem();
+        _delay_ms(200);
+        controls ^= 0xFF;
 
-            }
-
-//		menu_doitem();
-		process_usart();
 	}
 	return 0;
 }
